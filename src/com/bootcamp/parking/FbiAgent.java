@@ -7,7 +7,7 @@ public class FbiAgent implements Subscriber{
 	}
 
 	@Override
-	public void notifySubscriber() {
+	public void notifySubscriber(ParkingLot lot) {
 		// TODO Auto-generated method stub
 		
 	}

@@ -36,7 +36,7 @@ public class ParkingLot {
 			else {
 				ParkingTicket parkTicket = new ParkingTicket();
 				cars.put(parkTicket, car);
-				notificationService.notifyWhenParking(cars.size());
+				notificationService.notifyWhenParking(cars.size(),this);
 				return parkTicket;
 			}
 		} else {
@@ -48,7 +48,7 @@ public class ParkingLot {
 
 		if (cars.containsKey(parkTicket)) {
 			Car car =  cars.remove(parkTicket);
-			notificationService.notifyWhenUnparking(cars.size());
+			notificationService.notifyWhenUnparking(cars.size(),this);
 			return car;
 		} else
 			throw new CarNotFoundForGivenTicketException("Invalid Ticket.");

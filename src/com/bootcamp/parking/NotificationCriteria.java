@@ -5,8 +5,8 @@ public enum NotificationCriteria {
 	FULL(100),
 	ALMOST_FULL(90),
 	ALMOST_EMPTY(10),
-	HALF_FULL(50);
-	
+	HALF_FULL(50),
+	AGAIN_EMPTY(99);
 	private final int criteriaInPercent;
 	
 	private NotificationCriteria(int criteria) {

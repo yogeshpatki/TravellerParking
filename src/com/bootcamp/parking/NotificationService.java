@@ -13,12 +13,13 @@ public class NotificationService {
 		this.subscribersForUnParking = subscribersForUnParking;
 	}
 
-	public void notifyWhenParking(Integer occupiedSize) {
-		
+	public void notifyWhenParking(Integer occupiedSize,ParkingLot lot) {
+	
 			HashSet<Subscriber> subscribersToNotify = subscribersForParking.get(occupiedSize);
 			if (subscribersToNotify != null) {
 				for (Subscriber subscriber : subscribersToNotify) {
-					subscriber.notifySubscriber();
+					System.out.println(subscriber.toString());
+					subscriber.notifySubscriber(lot);
 				}
 
 			}
@@ -27,12 +28,13 @@ public class NotificationService {
 
 	}
 
-	public void notifyWhenUnparking(Integer occupiedSize) {
-
+	public void notifyWhenUnparking(Integer occupiedSize,ParkingLot lot) {
+		
 		HashSet<Subscriber> subscribersToNotify = subscribersForUnParking.get(occupiedSize);
 		if (subscribersToNotify != null) {
 			for (Subscriber subscriber : subscribersToNotify) {
-				subscriber.notifySubscriber();
+				subscriber.notifySubscriber(lot);
+				
 			}
 
 		}
@@ -41,8 +43,8 @@ public class NotificationService {
 
 	public void addSubscriber(NotificationCriteria criteria, int capacity, Subscriber subscriber,WhenToNotify when) {
 		
-		int cap = (int) (capacity * (criteria.getCriteriaInPercent() * 0.01));
-		
+		int cap = (int) Math.floor((capacity * (criteria.getCriteriaInPercent() * 0.01)));
+		System.out.println(cap);
 		switch(when.getWhen()){
 		case 0:
 			putSubscriberInMap(this.subscribersForParking,subscriber,cap);
