@@ -7,12 +7,18 @@ public class ParkingLot {
 	private final int capacity;
 
 	private HashMap<ParkingTicket, Car> cars = new HashMap<ParkingTicket, Car>();
+	private NotificationService notificationService;
+	private ParkingLotOwner parkingLotOwner;
 
-	public ParkingLotOwner parkingLotOwner = new ParkingLotOwner();
-
-	public ParkingLot(int cap,ParkingLotOwner owner) {
+	public ParkingLot(int cap, ParkingLotOwner owner, NotificationService notificationService) {
 		this.capacity = cap;
 		this.parkingLotOwner = owner;
+		this.notificationService = notificationService;
+	}
+	public ParkingLot(int cap, ParkingLotOwner owner) {
+		this.capacity = cap;
+		this.parkingLotOwner = owner;
+		
 	}
 
 	public boolean isParkingLotFull() {
@@ -30,9 +36,7 @@ public class ParkingLot {
 			else {
 				ParkingTicket parkTicket = new ParkingTicket();
 				cars.put(parkTicket, car);
-				if (cars.size() == capacity) {
-					parkingLotOwner.attentionRequired();
-				}
+				notificationService.notifyWhenParking(cars.size());
 				return parkTicket;
 			}
 		} else {
@@ -43,10 +47,9 @@ public class ParkingLot {
 	public Car unPark(ParkingTicket parkTicket) throws CarNotFoundForGivenTicketException {
 
 		if (cars.containsKey(parkTicket)) {
-			if(isParkingLotFull()){
-				parkingLotOwner.spaceIsNowAvailableInParkingLot();
-			}
-			return cars.remove(parkTicket);
+			Car car =  cars.remove(parkTicket);
+			notificationService.notifyWhenUnparking(cars.size());
+			return car;
 		} else
 			throw new CarNotFoundForGivenTicketException("Invalid Ticket.");
 	}

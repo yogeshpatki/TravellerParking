@@ -1,6 +1,10 @@
 package com.bootcamp.parking;
 
-public class ParkingLotOwner implements Subscriber {
+public class FbiAgent implements Subscriber{
+
+	public static void parkingLotAFull(){
+		
+	}
 
 	@Override
 	public void notifySubscriber() {

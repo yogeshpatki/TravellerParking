@@ -1,14 +1,17 @@
 package com.bootcamp.parking;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
+import java.util.HashMap;
+import java.util.HashSet;
 
 import org.junit.Test;
-import static org.mockito.Mockito.*;
 
 public class TestsForParkingCar {
 
-	@Test
+/*	@Test
 	public void shouldParkACarIfLotIsNotFull() throws ParkingLotFullException, CarAlreadyParkedException{
 		Car car = new Car("mh12");
 		ParkingLotOwner owner = mock(ParkingLotOwner.class);
@@ -39,57 +42,78 @@ public class TestsForParkingCar {
 			System.out.println(exception.getMessage());
 		}
 	}
-
+*/
 	@Test
 	public void testIfOwnerIsNotifiedWhenLotIsFullOnce() {
 		Car car = new Car("mh12");
+		Car car2 = new Car("mh13");
+		int capacity = 2;
 		ParkingLotOwner owner = mock(ParkingLotOwner.class);
+		NotificationService notService = new NotificationService(new HashMap<Integer, HashSet<Subscriber>>(),new HashMap<Integer, HashSet<Subscriber>>());
+		notService.addSubscriber(NotificationCriteria.HALF_FULL,capacity, owner,WhenToNotify.WhenUnParking);
+		ParkingLot parkingLotA = new ParkingLot(capacity,owner,notService);
 	try{
-		ParkingLot parkingLotA = new ParkingLot(1,owner);
+		
 		ParkingTicket parkTicket = parkingLotA.park(car);
-		parkTicket = parkingLotA.park(car);
+		parkTicket = parkingLotA.park(car2);
+		parkingLotA.unPark(parkTicket);
+		//parkingLotA.unPark(parkTicket);
+	
 		
 	}catch(Exception e){
 		
 		}finally{
-			verify(owner , times(1)).attentionRequired();
-		}
+			verify(owner , times(1)).notifySubscriber();		
+			}
 	}
 	
 	@Test
 	public void testIfSpaceAvailabilityIsNotifiedToOwner(){
 		Car car = new Car("mh12");
+		Car car2 = new Car("mh13");
+		int capacity = 2;
 		ParkingLotOwner owner = mock(ParkingLotOwner.class);
+		
+		NotificationService notService = new NotificationService(new HashMap<Integer, HashSet<Subscriber>>(),new HashMap<Integer, HashSet<Subscriber>>());
+		notService.addSubscriber(NotificationCriteria.ALMOST_FULL,capacity, owner,WhenToNotify.WhenUnParking);
+		ParkingLot parkingLotA = new ParkingLot(capacity,owner,notService);
 	try{
-		ParkingLot parkingLotA = new ParkingLot(1,owner);
+		
 		ParkingTicket parkTicket = parkingLotA.park(car);
+		parkTicket = parkingLotA.park(car2);
 		parkingLotA.unPark(parkTicket);
-					  
+
 	}catch(Exception e){
 		
 		}finally{
-			verify(owner , times(1)).spaceIsNowAvailableInParkingLot();	
-		}
-	
+			verify(owner , times(1)).notifySubscriber();		
+			}
 	}
 
+		
 	@Test
-	public void testIfSpaceAvailabilityIsNotifiedToOwnerOnlyOnce(){
+	public void fbiAgentShouldBeNotifiedWhenParkingLotAlmostFull(){
+		FbiAgent fbiAgent = mock(FbiAgent.class);
 		Car car = new Car("mh12");
 		Car car2 = new Car("mh13");
+		Car car3 = new Car("mh14");
 		ParkingLotOwner owner = mock(ParkingLotOwner.class);
+		NotificationService notifyService = new NotificationService(new HashMap<Integer, HashSet<Subscriber>>(),new HashMap<Integer, HashSet<Subscriber>>());
+		notifyService.addSubscriber(NotificationCriteria.ALMOST_FULL,2, fbiAgent,WhenToNotify.WhenParking);
+		ParkingLot parkingLotA = new ParkingLot(3,owner,notifyService);
 	try{
-		ParkingLot parkingLotA = new ParkingLot(2,owner);
+		
 		ParkingTicket parkTicket = parkingLotA.park(car);
-		ParkingTicket parkTicket1 = parkingLotA.park(car2);
+		parkTicket = parkingLotA.park(car2);
+		parkTicket = parkingLotA.park(car3);
 		parkingLotA.unPark(parkTicket);
-		parkingLotA.unPark(parkTicket1);
-					  
+		
+		
 	}catch(Exception e){
 		
-		}
-	finally{
-		verify(owner , times(1)).spaceIsNowAvailableInParkingLot();
-	}
+		}finally{
+			verify(fbiAgent,times(1)).notifySubscriber();		
+			}
+	
 	}
 }
